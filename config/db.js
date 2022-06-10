@@ -24,10 +24,22 @@ const zb_log_config = {
 };
 
 const pool_zb = async () => {
-  return await get("pool_zb", zb_config);
+  try {
+    const r = await get("pool_zb", zb_config);
+    console.log("Successfully connected to Database");
+    return r;
+  } catch (err) {
+    console.log(err);
+  }
 };
 const pool_zb_log = async () => {
-  return await get("pool_zb_log", zb_log_config);
+  try {
+    const r = await get("pool_zb_log", zb_log_config);
+    console.log("Successfully connected to Database1");
+    return r;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 module.exports = { pool_zb, pool_zb_log };

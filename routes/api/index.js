@@ -11,7 +11,13 @@ router.get("/", async (req, res, next) => {
 
   try {
     const pool_zbq = await pool_zb();
-    const result = await pool_zbq.query(``);
+    const result = await pool_zbq.query(`
+      SELECT *
+      FROM [ZebraDB].[dbo].[staff] a
+      left join [ZebraDB].[dbo].[profile_fleet] b on a.profile_id = b.profile_id
+      left join [ZebraDB].[dbo].[fleet] c on b.fleet_id = c.fleet_id
+      where login_name = 'administrator'
+    `);
     console.log(result);
   } catch (err) {
     next(err);
