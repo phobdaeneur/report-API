@@ -3,6 +3,7 @@ const router = express.Router();
 const { pool_zb } = require("../../config/db");
 const ApiError = require("../../error/ApiError");
 const md5 = require("md5");
+const jwt = require("../../utils/jwt");
 
 /* POST login */
 router.post("/", async (req, res, next) => {
@@ -30,11 +31,20 @@ router.post("/", async (req, res, next) => {
     if (user.recordset[0].login_pwd.replace(/-/g, "") !== hashMD5) {
       res.status(401).json("Invalid password!");
     }
-    res.status(200).json("Successfully Authenticated! :)");
 
     /**
      * * set JWT in cookie for authentication
      */
+    const token = await jwt.signAccessToken(user.recordset[0].user_id);
+    res.status(200).json({
+      data: {
+        username: user.recordset[0].name,
+        email: user.recordset[0].email,
+      },
+      token: {
+        accessToken: token,
+      },
+    });
   } catch (err) {
     next(err);
   }
