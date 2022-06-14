@@ -3,12 +3,11 @@ const router = express.Router();
 const { pool_zb } = require("../../config/db");
 const ApiError = require("../../error/ApiError");
 const md5 = require("md5");
-const jwt = require("../../utils/jwt");
+const issueJWT = require("../../utils/issueJWT");
 
 /* POST login */
 router.post("/", async (req, res, next) => {
   const { username, password } = req.body;
-  console.log(username, password);
   if (!username || !password) {
     next(ApiError.badRequest("Invalid username or password!"));
   }
@@ -35,7 +34,7 @@ router.post("/", async (req, res, next) => {
     /**
      * * set JWT in cookie for authentication
      */
-    const token = await jwt.signAccessToken(user.recordset[0].user_id);
+    const token = await issueJWT.signAccessToken();
     res.status(200).json({
       data: {
         username: user.recordset[0].name,
