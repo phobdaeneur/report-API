@@ -7,6 +7,7 @@ module.exports = async (req, res, next) => {
 
   if (!bearer) {
     next(ApiError.unauthorized("Invalid token!"));
+    return
   }
   const token = bearer.substring(7);
 

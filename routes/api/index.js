@@ -6,8 +6,9 @@ const ApiError = require("../../error/ApiError");
 const isAuth = require("../../middlewares/isAuth");
 
 /* GET api/fleets */
-router.post("/fleets", isAuth, async (req, res, next) => {
-  const { loginName } = req.body;
+router.get("/usrfleets/:loginName", async (req, res, next) => {
+  // extract path parameter
+  const { loginName } = req.params;
 
   try {
     const pool_zbq = await pool_zb();
@@ -26,13 +27,12 @@ router.post("/fleets", isAuth, async (req, res, next) => {
   }
 });
 
-/* POST api/fleet/vehicles */
-router.post("/fleet/vehicles", isAuth, async (req, res, next) => {
-  const { fleetId } = req.body;
+/* GET api/fleet/vehicles */
+router.get("/fleet/vehicles/:fleetId", async (req, res, next) => {
+  const { fleetId } = req.params;
 
   if (!fleetId) {
-    next(ApiError.badRequest("Invalid credentials!"));
-    return;
+    return next(ApiError.badRequest("Invalid credentials!"));
   } else {
     try {
       const pool_zbq = await pool_zb();
