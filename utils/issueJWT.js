@@ -29,13 +29,12 @@ const signAccessToken = async (payload) => {
 /**
  * @param {string} token jwt token string
  */
-const verifyAccessToken = (token) => {
+const verifyAccessToken = async (token) => {
   return new Promise((resolve, reject) => {
     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
       if (err) {
         reject(err);
-        throw err;
-        S;
+        // throw err;
       }
       resolve(decoded);
     });

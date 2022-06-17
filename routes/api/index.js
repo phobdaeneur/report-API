@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
-// const { poolPromise } = require("../../config/db");
 const { pool_zb } = require("../../config/db");
 const ApiError = require("../../error/ApiError");
 const isAuth = require("../../middlewares/isAuth");
 
 /* GET api/fleets */
-router.get("/usrfleets/:loginName", async (req, res, next) => {
-  // extract path parameter
+router.get("/fleets/:loginName", isAuth, async (req, res, next) => {
+  /**
+   * Extract path parameter
+   */
   const { loginName } = req.params;
 
   try {
@@ -21,14 +22,14 @@ router.get("/usrfleets/:loginName", async (req, res, next) => {
       where login_name = '${loginName}'
     `);
 
-    res.status(200).json(result.recordset);
+    return res.status(200).json(result.recordset);
   } catch (err) {
     next(err);
   }
 });
 
 /* GET api/fleet/vehicles */
-router.get("/fleet/vehicles/:fleetId", async (req, res, next) => {
+router.get("/fleet/vehicles/:fleetId", isAuth, async (req, res, next) => {
   const { fleetId } = req.params;
 
   if (!fleetId) {
@@ -71,7 +72,7 @@ router.get("/fleet/vehicles/:fleetId", async (req, res, next) => {
         where a.fleet_id = ${parseInt(fleetId)}
     `);
 
-      res.status(200).json(result.recordset);
+      return res.status(200).json(result.recordset);
     } catch (err) {
       next(err);
     }

@@ -2,23 +2,26 @@ const issueJWT = require("../utils/issueJWT");
 const ApiError = require("../error/ApiError");
 
 module.exports = async (req, res, next) => {
-  // extract bearer token
+  /**
+   * Extract Bearer token from request header
+   */
   const bearer = req.header("authorization");
 
   if (!bearer) {
-    next(ApiError.unauthorized("Invalid token!"));
-    return
+    return next(ApiError.unauthorized("Invalid Token!"));
   }
-  const token = bearer.substring(7);
+
+  const token = bearer.split(" ")[1];
+
+  if (bearer.split(" ")[1] === null) {
+    return next(ApiError.unauthorized("Invalid Token!"));
+  }
 
   try {
     const verifiedToken = await issueJWT.verifyAccessToken(token);
-    /**
-     * TODO: for more security reasons, verifiedToken.data might need to auth in db
-     */
-    if (verifiedToken) {
-      next();
-    }
+    req.user = verifiedToken.data;
+    req.token = token;
+    next();
   } catch (err) {
     next(err);
   }
